@@ -90,7 +90,7 @@ public class XO extends JFrame implements ActionListener {
 					olds[2] = buttons[1][1].getText();
 					buttons[1][1].setFont(new Font("Arial", 0, 20));
 					buttons[1][1].setForeground(Color.gray);
-					buttons[1][1].setText("<html>Click " + resetTimes +" times<br>to reset</html>");
+					buttons[1][1].setText("<html>Click " + resetTimes + " times<br>to reset</html>");
 				}
 			}
 
@@ -155,7 +155,8 @@ public class XO extends JFrame implements ActionListener {
 							setTitle("Game over. Player " + winnerChar + " won! [Reset: Click the middle tile "
 									+ resetTimes + "x in a row]");
 							running = false;
-							checkSubMenu(1);
+							updateSubMenu(1);
+							resetMode = true;
 						}
 					}
 					return;
@@ -163,7 +164,7 @@ public class XO extends JFrame implements ActionListener {
 				setTitle(message + " [Reset: Click the middle tile " + resetTimes + "x in a row]");
 				resetMode = true;
 				colorButtons(winner);
-				checkSubMenu(0);
+				updateSubMenu(0);
 			} else {
 				updateTitle();
 			}
@@ -192,7 +193,7 @@ public class XO extends JFrame implements ActionListener {
 		String curTurn = player == 0 ? "X" : "O";
 		setTitle("XO [" + pointsX + ":" + pointsO + "] - Its " + curTurn + "'s turn");
 	}
-	
+
 	private void resetMiddleButton() {
 		buttons[1][1].setFont((Font) olds[0]);
 		buttons[1][1].setForeground((Color) olds[1]);
@@ -202,7 +203,7 @@ public class XO extends JFrame implements ActionListener {
 	private void reset() {
 		if (showResetText)
 			resetMiddleButton();
-		
+
 		if (!running) {
 			completeReset();
 		}
@@ -243,7 +244,7 @@ public class XO extends JFrame implements ActionListener {
 		showResetText = Boolean.parseBoolean(values[5]);
 
 		setTitle("XO [0:0] - Its X's turn");
-		checkSubMenu(2);
+		updateSubMenu(2);
 	}
 
 	private void startResetThread() {
@@ -316,7 +317,8 @@ public class XO extends JFrame implements ActionListener {
 					}
 					if (pointsX < newEndGameAt && pointsO < newEndGameAt) {
 						endGameAt = newEndGameAt;
-						Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+						Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+								showResetText);
 						for (int i = 0; i < subMenuEndGameAt.getItemCount(); i++) {
 							CheckboxMenuItem curItem = (CheckboxMenuItem) subMenuEndGameAt.getItem(i);
 							curItem.setState(false);
@@ -346,7 +348,8 @@ public class XO extends JFrame implements ActionListener {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
 					resetTimes = Integer.parseInt(curItem.getLabel());
-					Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+					Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+							showResetText);
 					for (int i = 0; i < resetTimesMenu.getItemCount(); i++) {
 						CheckboxMenuItem curItem = (CheckboxMenuItem) resetTimesMenu.getItem(i);
 						curItem.setState(false);
@@ -373,7 +376,8 @@ public class XO extends JFrame implements ActionListener {
 				public void itemStateChanged(ItemEvent e) {
 					resetDelay = Integer.parseInt(curItem.getLabel().substring(0, curItem.getLabel().length() - 9))
 							* 1000;
-					Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+					Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+							showResetText);
 					for (int i = 0; i < resetDelayMenu.getItemCount(); i++) {
 						CheckboxMenuItem curItem = (CheckboxMenuItem) resetDelayMenu.getItem(i);
 						curItem.setState(false);
@@ -382,14 +386,15 @@ public class XO extends JFrame implements ActionListener {
 				}
 			});
 		}
-		
+
 		CheckboxMenuItem resetText = new CheckboxMenuItem("Show Reset Text");
 		resetText.setState(showResetText);
 		resetText.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				showResetText = !showResetText;
-				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+						showResetText);
 			}
 		});
 
@@ -403,7 +408,8 @@ public class XO extends JFrame implements ActionListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				winnerContinuesPlaying = !winnerContinuesPlaying;
-				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+						showResetText);
 			}
 		});
 
@@ -413,7 +419,8 @@ public class XO extends JFrame implements ActionListener {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				showShadow = !showShadow;
-				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow, showResetText);
+				Settings.writeSettings(endGameAt, resetTimes, resetDelay, winnerContinuesPlaying, showShadow,
+						showResetText);
 			}
 		});
 
@@ -436,7 +443,7 @@ public class XO extends JFrame implements ActionListener {
 		return menuBar;
 	}
 
-	public void checkSubMenu(int state) {
+	public void updateSubMenu(int state) {
 		Menu subMenuEndGameAt = (Menu) getMenuBar().getMenu(1).getItem(0);
 		for (int i = 0; i < subMenuEndGameAt.getItemCount(); i++) {
 			CheckboxMenuItem curItem = (CheckboxMenuItem) subMenuEndGameAt.getItem(i);
