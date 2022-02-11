@@ -1,0 +1,6 @@
+endGameAt:3
+resetTimes:3
+resetDelay:2000
+winnerContinuesPlaying:true
+showShadow:true
+showResetText:true
